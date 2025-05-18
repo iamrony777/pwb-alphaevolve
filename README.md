@@ -26,12 +26,15 @@
 
 ```bash
 # clone and install in editable mode
-$ git clone https://github.com/your‑org/pwb-alphaevolve.git
+$ git clone https://github.com/paperswithbacktest/pwb-alphaevolve.git
 $ cd pwb-alphaevolve
 $ pip install -e .
 
 # set your OpenAI key (model "o3" required)
 $ export OPENAI_API_KEY=sk-...
+
+# set your Papers‑With‑Backtest dataset (e.g. "paperswithbacktest/Stocks-Daily-Price")
+$ export HF_ACCESS_TOKEN=hf_
 
 # launch the evolution controller (infinite loop)
 $ python scripts/run_controller.py

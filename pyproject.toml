@@ -27,20 +27,21 @@ classifiers = [
 # ---------------------------------------------------------------------
 # Runtime dependencies
 # ---------------------------------------------------------------------
-[project.dependencies]
-pwb-toolbox = ">=0.4,<1.0"
-pwb-backtrader = ">=0.3,<1.0"
-backtrader = ">=1.9"
-openai = ">=1.0"
-backoff = ">=2.2"
-python-dateutil = "*"
-pandas = ">=2.0"
-numpy = "*"
-tqdm = "*"
-pydantic = ">=2.0"
+dependencies = [
+  "pwb-toolbox>=0.1.2",
+  "pwb-backtrader>=1.9.78.123",
+  "backtrader>=1.9",
+  "openai>=1.0",
+  "backoff>=2.2",
+  "python-dateutil",
+  "pandas>=2.0",
+  "numpy",
+  "tqdm",
+  "pydantic>=2.0",
+]
 
+# leave this exactly as you had it
 [project.optional-dependencies]
-# Developer tooling
 dev = [
   "pytest>=8.0",
   "ruff>=0.4",
@@ -48,7 +49,6 @@ dev = [
   "pre-commit>=3.0",
   "ipykernel",
 ]
-# Dashboard / visualisation
 dashboard = [
   "streamlit>=1.30",
   "matplotlib>=3.8",
