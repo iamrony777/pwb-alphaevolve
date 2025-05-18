@@ -23,5 +23,21 @@ class Settings(BaseSettings):
     # Storage
     sqlite_db: str = Field("~/.pwb_alphaevolve/programs.db", env="SQLITE_DB")
 
+    # Data
+    default_symbols_raw: str = Field("SPY,EFA,IEF,VNQ,GSG", env="DEFAULT_SYMBOLS")
+    start_date: str = Field("1990-01-01", env="START_DATE")
+
+    hof_metric: str = Field("calmar", env="HOF_METRIC")
+
+    @property
+    def default_symbols(self) -> tuple[str, ...]:
+        """Always returns a tuple of upper-case tickers."""
+        return tuple(
+            s.strip().upper() for s in self.default_symbols_raw.split(",") if s.strip()
+        )
+
+    class Config:
+        env_file = ".env"
+
 
 settings = Settings()

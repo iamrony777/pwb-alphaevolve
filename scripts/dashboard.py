@@ -16,6 +16,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from pwb_alphaevolve.config import settings
 from pwb_alphaevolve.store.sqlite import ProgramStore
 from pwb_alphaevolve.evaluator.backtest import (
     _load_module_from_code,  # type: ignore  (private helper is okay for internal app)
@@ -29,9 +30,9 @@ store = ProgramStore()
 # ------------------------------------------------------------------
 # Hall of Fame table
 # ------------------------------------------------------------------
-st.title("🏆 Alpha‑Evolve Hall of Fame")
+st.title("🏆 AlphaEvolve Hall of Fame")
 TOP_K = st.sidebar.slider("Top K strategies", 3, 50, 10)
-hof_rows = store.top_k(k=TOP_K, metric="sharpe")
+hof_rows = store.top_k(k=TOP_K, metric=settings.hof_metric)
 
 if not hof_rows:
     st.info("Hall‑of‑Fame is empty – run the controller first.")

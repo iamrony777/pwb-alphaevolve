@@ -33,6 +33,7 @@ $ pip install -e .
 $ export OPENAI_API_KEY=sk-...
 
 # launch the evolution controller (infinite loop)
+$ python scripts/run_controller.py
 $ streamlit run scripts/dashboard.py
 ```
 

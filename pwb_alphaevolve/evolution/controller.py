@@ -68,7 +68,6 @@ class Controller:
                 return
 
             child_startegy = apply_patch(parent["code"], diff_json)
-            print(child_startegy)
 
             imports = "from collections import deque\nimport backtrader as bt"
             base_cls = inspect.getsource(BaseLoggingStrategy)

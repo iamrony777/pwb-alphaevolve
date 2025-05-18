@@ -15,12 +15,9 @@ from typing import Any, Sequence, Dict
 import backtrader as bt
 import pandas as pd
 
+from pwb_alphaevolve.config import settings
 from pwb_alphaevolve.data.loader import load_ohlc, add_feeds_to_cerebro
 from pwb_alphaevolve.utils import metrics as mt
-
-# default universe used for fast smoke tests
-DEFAULT_SYMBOLS = ("SPY", "EFA", "IEF", "VNQ", "GSG")
-START_DATE = "1990-01-01"
 
 
 # ------------------------------------------------------------------ #
@@ -59,9 +56,9 @@ def _find_strategy(mod: types.ModuleType) -> type[bt.Strategy]:
 
 
 def _run_backtest(
-    strategy_cls: type[bt.Strategy], symbols: Sequence[str] = DEFAULT_SYMBOLS
+    strategy_cls: type[bt.Strategy], symbols: Sequence[str] = settings.default_symbols
 ) -> Dict[str, Any]:
-    df = load_ohlc(tuple(symbols), start=START_DATE)
+    df = load_ohlc(tuple(symbols), start=settings.start_date)
     cerebro = bt.Cerebro()
     add_feeds_to_cerebro(df, cerebro)
     cerebro.addstrategy(strategy_cls)
@@ -92,7 +89,7 @@ def _run_backtest(
 # PUBLIC API
 # ------------------------------------------------------------------ #
 def evaluate_sync(
-    code: str, *, symbols: Sequence[str] = DEFAULT_SYMBOLS
+    code: str, *, symbols: Sequence[str] = settings.default_symbols
 ) -> Dict[str, Any]:
     """Blocking evaluation; raises on errors (handled by controller)."""
     mod = _load_module_from_code(code)
@@ -101,7 +98,7 @@ def evaluate_sync(
 
 
 async def evaluate(
-    code: str, *, symbols: Sequence[str] = DEFAULT_SYMBOLS
+    code: str, *, symbols: Sequence[str] = settings.default_symbols
 ) -> Dict[str, Any]:
     """
     Async wrapper so the evolution controller can `await`.

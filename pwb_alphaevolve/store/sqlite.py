@@ -14,6 +14,8 @@ import os, sqlite3, uuid, json, time, random
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
+from pwb_alphaevolve.config import settings
+
 
 class ProgramStore:
     def __init__(self, db_path: str | os.PathLike = "~/.pwb_alphaevolve/programs.db"):
@@ -74,7 +76,9 @@ class ProgramStore:
         row = cur.fetchone()
         return self._row_to_dict(row) if row else None
 
-    def top_k(self, k: int = 5, metric: str = "sharpe") -> List[Dict[str, Any]]:
+    def top_k(
+        self, k: int = 5, metric: str = settings.hof_metric
+    ) -> List[Dict[str, Any]]:
         cur = self.conn.execute("SELECT * FROM programs WHERE metrics IS NOT NULL")
         rows = [self._row_to_dict(r) for r in cur.fetchall()]
         rows.sort(key=lambda r: r["metrics"].get(metric, 0.0), reverse=True)

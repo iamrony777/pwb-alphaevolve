@@ -67,7 +67,7 @@ def _format_metrics(metrics: Dict[str, Any] | None) -> str:
 
 
 def _format_hof(store: ProgramStore, k: int = 3) -> str:
-    rows = store.top_k(k=k, metric="sharpe")
+    rows = store.top_k(k=k)
     if not rows:
         return "  (empty – still warming up)"
     lines = []
