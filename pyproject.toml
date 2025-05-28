@@ -62,7 +62,7 @@ Issues = "https://github.com/your-org/pwb-alphaevolve/issues"
 # ---------------------------------------------------------------------
 [tool.hatch.build.targets.wheel]
 include = [
-  "alpha_trader/**",
+  "alphaevolve/**",
   "scripts/**",
   "README.md",
   "LICENSE",

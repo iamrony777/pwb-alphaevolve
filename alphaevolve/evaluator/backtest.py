@@ -15,7 +15,7 @@ from typing import Any, Sequence, Dict
 import backtrader as bt
 import pandas as pd
 
-from example import config as example_config
+from examples import config as example_config
 from alphaevolve.data.loader import load_ohlc, add_feeds_to_cerebro
 from alphaevolve.utils import metrics as mt
 

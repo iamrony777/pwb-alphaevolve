@@ -17,7 +17,7 @@ from typing import Optional, Dict, Any, List
 
 from alphaevolve.config import settings
 
-from example import config as example_config
+from examples import config as example_config
 
 
 class ProgramStore:
