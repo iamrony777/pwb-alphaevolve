@@ -68,11 +68,11 @@ The dashboard uses Streamlit to visualize the evolution process and back‑test 
 
 ```
 alphaevolve/
-├── data/          # loaders & helpers on top of pwb_toolbox
-├── strategies/    # seed strategies (EVOLVE‑BLOCK markers)
-├── evaluator/     # Backtrader KPIs & walk‑forward
-├── llm_engine/    # prompt builder + OpenAI client
+├── engine.py      # convenience wrapper to run the evolution loop
+├── evaluator/     # data loading, metrics & Backtrader evaluation
 ├── evolution/     # controller, patching, islands
+├── llm_engine/    # prompt builder + OpenAI client
+├── strategies/    # seed strategies (EVOLVE‑BLOCK markers)
 └── store/         # SQLite persistence
 scripts/           # CLI entry‑points
 ```
