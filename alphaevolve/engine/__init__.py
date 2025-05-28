@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from alphaevolve.store.sqlite import ProgramStore
 from alphaevolve.evolution.controller import Controller
+from alphaevolve.store.sqlite import ProgramStore
 
 __all__ = ["AlphaEvolve", "Strategy"]
 
@@ -19,7 +19,7 @@ class Strategy:
 
     id: str
     code: str
-    metrics: Dict[str, Any]
+    metrics: dict[str, Any]
 
 
 class AlphaEvolve:
@@ -27,15 +27,13 @@ class AlphaEvolve:
 
     def __init__(
         self,
-        initial_program_path: str,
-        evaluation_file: str,
+        initial_program_paths: list[str],
         config_path: str,
         *,
-        store: Optional[ProgramStore] = None,
+        store: ProgramStore | None = None,
     ) -> None:
         # For now we simply ignore the paths but keep them for future use.
-        self.initial_program_path = Path(initial_program_path)
-        self.evaluation_file = Path(evaluation_file)
+        self.initial_program_paths = [Path(p) for p in initial_program_paths]
         self.config_path = Path(config_path)
         self.store = store or ProgramStore()
         self.controller = Controller(self.store)
