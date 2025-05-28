@@ -31,3 +31,21 @@ def test_apply_patch_block_replace():
         "    # === END EVOLVE-BLOCK ===\n"
     )
     assert result == expected
+
+def test_apply_patch_preserves_indentation():
+    parent = (
+        "def foo():\n"
+        "    # === EVOLVE-BLOCK: block ===\n"
+        "    print('old')\n"
+        "    # === END EVOLVE-BLOCK ===\n"
+    )
+    diff = {"blocks": {"block": "a = 1\nb = 2"}}
+    result = apply_patch(parent, diff)
+    expected = (
+        "def foo():\n"
+        "    # === EVOLVE-BLOCK: block ===\n"
+        "    a = 1\n"
+        "    b = 2\n"
+        "    # === END EVOLVE-BLOCK ===\n"
+    )
+    assert result == expected
