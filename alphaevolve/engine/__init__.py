@@ -32,11 +32,12 @@ class AlphaEvolve:
         *,
         store: ProgramStore | None = None,
     ) -> None:
-        # For now we simply ignore the paths but keep them for future use.
         self.initial_program_paths = [Path(p) for p in initial_program_paths]
         self.config_path = Path(config_path)
         self.store = store or ProgramStore()
-        self.controller = Controller(self.store)
+        self.controller = Controller(
+            self.store, initial_program_paths=self.initial_program_paths
+        )
 
     async def run(self, iterations: int = 1) -> Strategy:
         """Run the evolution loop for a fixed number of iterations."""
