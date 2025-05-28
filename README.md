@@ -43,8 +43,7 @@ from alphaevolve import AlphaEvolve
 
 # Initialize the system
 evolve = AlphaEvolve(
-    initial_program_path="examples/sma_momentum.py",
-    evaluation_file="path/to/evaluator.py",
+    initial_program_paths=["examples/sma_momentum.py"],
     config_path="examples/config.py"
 )
 
