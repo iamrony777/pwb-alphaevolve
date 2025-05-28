@@ -8,12 +8,13 @@ High‑level loop:
 5. Insert child into store (which updates MAP‑Elites grid).
 """
 
-import asyncio, json, inspect, textwrap, logging
+import asyncio, json, inspect, textwrap, logging, random
 import textwrap
 from typing import Optional
 
 from alphaevolve.strategies.base import BaseLoggingStrategy
 from alphaevolve.store.sqlite import ProgramStore
+from alphaevolve.config import settings
 from alphaevolve.llm_engine import prompts, openai_client
 from alphaevolve.evolution.patching import apply_patch
 from alphaevolve.evaluator.backtest import evaluate
@@ -36,16 +37,33 @@ class Controller:
         if self.store.top_k(k=1):
             return  # already seeded
         seeds = [templates.SMAMomentum, templates.VolAdjMomentum]
-        for cls in seeds:
+        for i, cls in enumerate(seeds):
             code = textwrap.dedent(inspect.getsource(cls))
-            self.store.insert(code, metrics=None, parent_id=None)
+            self.store.insert(code, metrics=None, parent_id=None, island=i % settings.num_islands)
         logger.info("Seed strategies inserted into store.")
+
+    def _select_parent(self, parent_id: Optional[str]):
+        if parent_id:
+            return self.store.get(parent_id)
+        r = random.random()
+        if r < settings.elite_selection_ratio:
+            elites = self.store.top_k(k=settings.archive_size)
+            return random.choice(elites) if elites else self.store.sample()
+        r -= settings.elite_selection_ratio
+        if r < settings.exploitation_ratio:
+            best = self.store.top_k(k=1)
+            return best[0] if best else self.store.sample()
+        r -= settings.exploitation_ratio
+        if r < settings.exploration_ratio:
+            island = random.randrange(settings.num_islands)
+            return self.store.sample(island=island)
+        return self.store.sample()
 
     async def _spawn(self, parent_id: Optional[str]):
         """Generate, evaluate & store one child strategy."""
         async with self.sem:
             # 1) Select parent
-            parent = self.store.sample(parent_id)
+            parent = self._select_parent(parent_id)
             if parent is None:
                 logger.warning("No parent found; skipping spawn.")
                 return
@@ -80,7 +98,12 @@ class Controller:
                 return
 
             # 5) Persist
-            self.store.insert(child_code, kpis, parent_id=parent["id"])
+            self.store.insert(
+                child_code,
+                kpis,
+                parent_id=parent["id"],
+                island=parent.get("island", 0),
+            )
             logger.info("Child stored – Sharpe %.2f", kpis.get("sharpe", 0))
 
     # ------------------------------------------------------------------
