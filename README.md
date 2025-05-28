@@ -97,7 +97,6 @@ pip install git+https://github.com/your‑org/pwb-alphaevolve.git
 
 * [pwb-toolbox](https://github.com/paperswithbacktest/pwb-toolbox)
 * [pwb-backtrader](https://github.com/paperswithbacktest/pwb-backtrader)
-* backtrader ≥ 1.9
 * openai ≥ 1.0 (structured output)
 * tqdm, pandas, numpy, pydantic
 
