@@ -62,18 +62,14 @@ class Controller:
             try:
                 diff_json = json.loads(msg.content)
             except json.JSONDecodeError as e:
-                logger.error(
-                    f"Model did not return valid JSON: {e}\n{msg.content[:500]}"
-                )
+                logger.error(f"Model did not return valid JSON: {e}\n{msg.content[:500]}")
                 return
 
             child_startegy = apply_patch(parent["code"], diff_json)
 
             imports = "from collections import deque\nimport backtrader as bt"
             base_cls = inspect.getsource(BaseLoggingStrategy)
-            child_code = textwrap.dedent(
-                imports + "\n\n" + base_cls + "\n\n" + child_startegy
-            )
+            child_code = textwrap.dedent(imports + "\n\n" + base_cls + "\n\n" + child_startegy)
 
             # 4) Evaluate
             try:
@@ -95,4 +91,10 @@ class Controller:
         while True:
             await self._spawn(None)
             # Optional: back‑off to be polite to API limits when concurrency=1
+            await asyncio.sleep(0.01)
+
+    async def run(self, iterations: int) -> None:
+        """Run the evolution loop for a fixed number of iterations."""
+        for _ in range(iterations):
+            await self._spawn(None)
             await asyncio.sleep(0.01)

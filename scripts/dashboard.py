@@ -16,8 +16,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from alphaevolve.config import settings
 from alphaevolve.store.sqlite import ProgramStore
+from example import config as example_config
 from alphaevolve.evaluator.backtest import (
     _load_module_from_code,  # type: ignore  (private helper is okay for internal app)
     _find_strategy,  # type: ignore
@@ -32,7 +32,7 @@ store = ProgramStore()
 # ------------------------------------------------------------------
 st.title("🏆 AlphaEvolve Hall of Fame")
 TOP_K = st.sidebar.slider("Top K strategies", 3, 50, 10)
-hof_rows = store.top_k(k=TOP_K, metric=settings.hof_metric)
+hof_rows = store.top_k(k=TOP_K, metric=example_config.HOF_METRIC)
 
 if not hof_rows:
     st.info("Hall‑of‑Fame is empty – run the controller first.")
