@@ -11,7 +11,7 @@ Case B) {"blocks": {...}}   → surgical replacement inside matching
 Block detection uses regex – it remains robust to indentation changes.
 """
 
-import json, re
+import re
 from typing import Dict, Any
 
 BLOCK_RE = re.compile(

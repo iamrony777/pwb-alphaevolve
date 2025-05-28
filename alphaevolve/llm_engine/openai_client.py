@@ -5,7 +5,7 @@
 * Centralised settings via `alphaevolve.config.settings`
 """
 
-import openai, asyncio
+import openai
 import backoff
 from typing import List, Dict, Any
 
@@ -14,6 +14,7 @@ from alphaevolve.config import settings
 # Configure global client key
 openai.api_type = "openai"
 openai.api_key = settings.openai_api_key
+async_client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
 
 
 @backoff.on_exception(
@@ -26,9 +27,9 @@ async def chat(messages: List[Dict[str, str]], **kw) -> Any:
     params = dict(
         model=settings.openai_model,
         messages=messages,
-        max_completion_tokens=settings.max_completion_tokens,
+        max_tokens=settings.max_completion_tokens,
         response_format=response_format,
     )
     params.update(kw)
-    completion = openai.chat.completions.create(**params)
+    completion = await async_client.chat.completions.create(**params)
     return completion.choices[0].message

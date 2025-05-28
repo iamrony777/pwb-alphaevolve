@@ -27,9 +27,12 @@ def cagr(equity_curve: pd.Series, periods_per_year: int = 252) -> float:
 
 def sharpe(returns: np.ndarray, rf: float = 0.0, periods_per_year: int = 252) -> float:
     excess = returns - rf / periods_per_year
-    if excess.std(ddof=1) == 0:
+    if len(excess) < 2:
         return 0.0
-    return np.sqrt(periods_per_year) * excess.mean() / excess.std(ddof=1)
+    std = excess.std(ddof=1)
+    if std == 0 or np.isnan(std):
+        return 0.0
+    return np.sqrt(periods_per_year) * excess.mean() / std
 
 
 def max_drawdown(equity_curve: pd.Series) -> float:
