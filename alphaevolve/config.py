@@ -10,9 +10,10 @@ SQLITE_DB         – Path to SQLite file ["~/.alphaevolve/programs.db"]
 """
 
 from pathlib import Path
-from pydantic_settings import BaseSettings
-from pydantic import Field
 
+import yaml
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -37,10 +38,16 @@ class Settings(BaseSettings):
     exploitation_ratio: float = Field(0.7, env="EXPLOITATION_RATIO")
     diversity_metric: str = Field("edit_distance", env="DIVERSITY_METRIC")
 
-
-
     class Config:
         env_file = ".env"
 
 
-settings = Settings()
+DEFAULT_CONFIG_FILE = Path(__file__).with_name("default_config.yaml")
+if DEFAULT_CONFIG_FILE.exists():
+    with DEFAULT_CONFIG_FILE.open("r") as f:
+        yaml_defaults = yaml.safe_load(f) or {}
+else:
+    yaml_defaults = {}
+
+
+settings = Settings(**yaml_defaults)
