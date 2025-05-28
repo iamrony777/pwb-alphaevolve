@@ -28,12 +28,10 @@ class AlphaEvolve:
     def __init__(
         self,
         initial_program_paths: list[str],
-        config_path: str,
         *,
         store: ProgramStore | None = None,
     ) -> None:
         self.initial_program_paths = [Path(p) for p in initial_program_paths]
-        self.config_path = Path(config_path)
         self.store = store or ProgramStore()
         self.controller = Controller(self.store, initial_program_paths=self.initial_program_paths)
 

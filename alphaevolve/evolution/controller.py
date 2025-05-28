@@ -40,7 +40,7 @@ class Controller:
     # ------------------------------------------------------------------
     def _ensure_seed_population(self):
         """If DB empty, insert seed strategies w/out metrics (lazy eval)."""
-        if self.store.top_k(k=1):
+        if self.store._count() > 0:
             return  # already seeded
 
         paths = self.initial_program_paths
@@ -114,7 +114,6 @@ class Controller:
             # 4) Evaluate
             try:
                 kpis = await evaluate(child_code)
-                print(kpis)
             except Exception as e:
                 logger.error(f"Evaluation failed: {e}")
                 return
