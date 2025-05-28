@@ -8,9 +8,9 @@ High‑level loop:
 5. Insert child into store (which updates MAP‑Elites grid).
 """
 
-import asyncio, json, inspect, textwrap, logging, random
-import textwrap
-from typing import Optional
+import asyncio, json, inspect, logging, random, textwrap
+from pathlib import Path
+from typing import Optional, Sequence
 
 from alphaevolve.strategies.base import BaseLoggingStrategy
 from alphaevolve.store.sqlite import ProgramStore
@@ -18,15 +18,21 @@ from alphaevolve.config import settings
 from alphaevolve.llm_engine import prompts, openai_client
 from alphaevolve.evolution.patching import apply_patch
 from alphaevolve.evaluator.backtest import evaluate
-from alphaevolve.strategies import templates  # seed strategies
 
 logger = logging.getLogger(__name__)
 
 
 class Controller:
-    def __init__(self, store: ProgramStore, *, max_concurrency: int = 4):
+    def __init__(
+        self,
+        store: ProgramStore,
+        *,
+        initial_program_paths: Sequence[str | Path] | None = None,
+        max_concurrency: int = 4,
+    ):
         self.store = store
         self.sem = asyncio.Semaphore(max_concurrency)
+        self.initial_program_paths = [Path(p) for p in initial_program_paths or []]
         self._ensure_seed_population()
 
     # ------------------------------------------------------------------
@@ -36,10 +42,26 @@ class Controller:
         """If DB empty, insert seed strategies w/out metrics (lazy eval)."""
         if self.store.top_k(k=1):
             return  # already seeded
-        seeds = [templates.SMAMomentum, templates.VolAdjMomentum]
-        for i, cls in enumerate(seeds):
-            code = textwrap.dedent(inspect.getsource(cls))
-            self.store.insert(code, metrics=None, parent_id=None, island=i % settings.num_islands)
+
+        paths = self.initial_program_paths
+        if not paths:
+            paths = [
+                Path("examples/sma_momentum.py"),
+                Path("examples/vol_adj_momentum.py"),
+            ]
+
+        for i, path in enumerate(paths):
+            try:
+                code = Path(path).read_text()
+            except Exception as e:
+                logger.error(f"Failed to read seed program {path}: {e}")
+                continue
+            self.store.insert(
+                textwrap.dedent(code),
+                metrics=None,
+                parent_id=None,
+                island=i % settings.num_islands,
+            )
         logger.info("Seed strategies inserted into store.")
 
     def _select_parent(self, parent_id: Optional[str]):
