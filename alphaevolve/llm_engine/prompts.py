@@ -19,7 +19,7 @@ import textwrap, json
 from datetime import datetime
 from typing import Dict, Any, List
 
-from pwb_alphaevolve.store.sqlite import ProgramStore
+from alphaevolve.store.sqlite import ProgramStore
 
 
 SYSTEM_MSG = """\

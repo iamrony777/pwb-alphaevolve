@@ -25,7 +25,7 @@ def main():  # noqa: D401 – simple entry point
         runpy.run_path(repo_root_script.as_posix(), run_name="__main__")
     else:
         # Fallback – maybe we installed via wheel and included a copy here.
-        from pwb_alphaevolve.evolution.controller import ProgramStore, Controller  # type: ignore
+        from alphaevolve.evolution.controller import ProgramStore, Controller  # type: ignore
         import asyncio
 
         args = sys.argv[1:]

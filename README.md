@@ -25,19 +25,39 @@
 ## 🚀 Quickstart
 
 ```bash
-# clone and install in editable mode
+# Clone and install in editable mode
 $ git clone https://github.com/paperswithbacktest/pwb-alphaevolve.git
 $ cd pwb-alphaevolve
 $ pip install -e .
 
-# set your OpenAI key (model "o3" required)
+# Set your OpenAI key (model "o3" required)
 $ export OPENAI_API_KEY=sk-...
-
-# set your Papers‑With‑Backtest dataset (e.g. "paperswithbacktest/Stocks-Daily-Price")
+# Set your Papers‑With‑Backtest dataset (e.g. "paperswithbacktest/Stocks-Daily-Price")
 $ export HF_ACCESS_TOKEN=hf_
+```
 
-# launch the evolution controller (infinite loop)
-$ python scripts/run_controller.py
+Launch the evolution controller (infinite loop)
+
+```python
+from alphaevolve import AlphaEvolve
+
+# Initialize the system
+evolve = AlphaEvolve(
+    initial_program_path="path/to/initial_strategy.py",
+    evaluation_file="path/to/evaluator.py",
+    config_path="path/to/config.yaml"
+)
+
+# Run the evolution
+best_strategy = await evolve.run(iterations=1000)
+print(f"Best strategy metrics:")
+for name, value in best_strategy.metrics.items():
+    print(f"  {name}: {value:.4f}")
+```
+
+Monitor the evolution process in real‑time using the optional Streamlit dashboard:
+
+```bash
 $ streamlit run scripts/dashboard.py
 ```
 

@@ -14,11 +14,11 @@ import os, sqlite3, uuid, json, time, random
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
-from pwb_alphaevolve.config import settings
+from alphaevolve.config import settings
 
 
 class ProgramStore:
-    def __init__(self, db_path: str | os.PathLike = "~/.pwb_alphaevolve/programs.db"):
+    def __init__(self, db_path: str | os.PathLike = "~/.alphaevolve/programs.db"):
         db_path = Path(db_path).expanduser()
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(

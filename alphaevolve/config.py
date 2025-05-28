@@ -6,7 +6,7 @@ OPENAI_API_KEY    – Required for evolution step (no default)
 OPENAI_MODEL      – Chat model name ["o3-mini"]
 MAX_COMPLETION_TOKENS        – Token cap for LLM replies [4096]
 
-SQLITE_DB         – Path to SQLite file ["~/.pwb_alphaevolve/programs.db"]
+SQLITE_DB         – Path to SQLite file ["~/.alphaevolve/programs.db"]
 """
 
 from pathlib import Path
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     max_completion_tokens: int = Field(4096, env="MAX_COMPLETION_TOKENS")
 
     # Storage
-    sqlite_db: str = Field("~/.pwb_alphaevolve/programs.db", env="SQLITE_DB")
+    sqlite_db: str = Field("~/.alphaevolve/programs.db", env="SQLITE_DB")
 
     # Data
     default_symbols_raw: str = Field("SPY,EFA,IEF,VNQ,GSG", env="DEFAULT_SYMBOLS")

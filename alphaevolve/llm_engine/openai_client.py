@@ -2,14 +2,14 @@
 
 * Transparent exponential back‑off with `backoff` package
 * Enforces structured‑output (`{"type": "json_object"}`)
-* Centralised settings via `pwb_alphaevolve.config.settings`
+* Centralised settings via `alphaevolve.config.settings`
 """
 
 import openai, asyncio
 import backoff
 from typing import List, Dict, Any
 
-from pwb_alphaevolve.config import settings
+from alphaevolve.config import settings
 
 # Configure global client key
 openai.api_type = "openai"

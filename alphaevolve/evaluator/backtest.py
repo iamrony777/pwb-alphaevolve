@@ -15,9 +15,9 @@ from typing import Any, Sequence, Dict
 import backtrader as bt
 import pandas as pd
 
-from pwb_alphaevolve.config import settings
-from pwb_alphaevolve.data.loader import load_ohlc, add_feeds_to_cerebro
-from pwb_alphaevolve.utils import metrics as mt
+from alphaevolve.config import settings
+from alphaevolve.data.loader import load_ohlc, add_feeds_to_cerebro
+from alphaevolve.utils import metrics as mt
 
 
 # ------------------------------------------------------------------ #
