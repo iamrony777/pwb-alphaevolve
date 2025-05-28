@@ -43,9 +43,9 @@ from alphaevolve import AlphaEvolve
 
 # Initialize the system
 evolve = AlphaEvolve(
-    initial_program_path="example/sma_momentum.py",
+    initial_program_path="examples/sma_momentum.py",
     evaluation_file="path/to/evaluator.py",
-    config_path="example/config.py"
+    config_path="examples/config.py"
 )
 
 # Run the evolution
@@ -68,7 +68,7 @@ The dashboard uses Streamlit to visualize the evolution process and back‑test 
 ## 📂 Project structure (high‑level)
 
 ```
-alpha_trader/
+alphaevolve/
 ├── data/          # loaders & helpers on top of pwb_toolbox
 ├── strategies/    # seed strategies (EVOLVE‑BLOCK markers)
 ├── evaluator/     # Backtrader KPIs & walk‑forward

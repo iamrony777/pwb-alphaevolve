@@ -17,7 +17,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from alphaevolve.store.sqlite import ProgramStore
-from example import config as example_config
+from examples import config as example_config
 from alphaevolve.evaluator.backtest import (
     _load_module_from_code,  # type: ignore  (private helper is okay for internal app)
     _find_strategy,  # type: ignore
