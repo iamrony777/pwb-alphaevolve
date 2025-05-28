@@ -5,6 +5,5 @@ from .engine import AlphaEvolve, Strategy
 __all__ = [
     "AlphaEvolve",
     "Strategy",
-    "data",
     "strategies",
 ]

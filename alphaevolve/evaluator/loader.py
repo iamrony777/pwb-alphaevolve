@@ -72,9 +72,7 @@ def add_feeds_to_cerebro(df: pd.DataFrame, cerebro: bt.Cerebro) -> None:
     tqdm_bar = tqdm(df.columns.levels[1], desc="Adding feeds")
     for symbol in tqdm_bar:
         tqdm_bar.set_postfix_str(symbol)
-        sym_df = (
-            df.xs(symbol, axis=1, level=1, drop_level=False).copy().droplevel(1, axis=1)
-        )
+        sym_df = df.xs(symbol, axis=1, level=1, drop_level=False).copy().droplevel(1, axis=1)
         sym_df.index.name = "date"
         sym_df = sym_df.ffill().bfill()
         sym_df = sym_df.loc[trading_idx]

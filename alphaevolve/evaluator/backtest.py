@@ -16,8 +16,8 @@ import backtrader as bt
 import pandas as pd
 
 from examples import config as example_config
-from alphaevolve.data.loader import load_ohlc, add_feeds_to_cerebro
-from alphaevolve.utils import metrics as mt
+from alphaevolve.evaluator.loader import load_ohlc, add_feeds_to_cerebro
+from alphaevolve.evaluator import metrics as mt
 
 
 # ------------------------------------------------------------------ #
@@ -105,6 +105,4 @@ async def evaluate(
     Runs the sync back-test in a thread to avoid event-loop blocking.
     """
     loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(
-        None, partial(evaluate_sync, code, symbols=symbols)
-    )
+    return await loop.run_in_executor(None, partial(evaluate_sync, code, symbols=symbols))

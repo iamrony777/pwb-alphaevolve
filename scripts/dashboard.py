@@ -77,14 +77,12 @@ with col_chart:
     try:
         mod = _load_module_from_code(selected["code"])
         strat_cls = _find_strategy(mod)
-        kpis = _run_backtest(
-            strat_cls
-        )  # returns KPIs only but we changed fn to expose curve below
+        kpis = _run_backtest(strat_cls)  # returns KPIs only but we changed fn to expose curve below
     except Exception as e:
         st.error(f"Failed to back‑test: {e}")
     else:
         # _run_backtest currently returns KPIs dict only; re‑run here to also get curve
-        from alphaevolve.data.loader import load_ohlc, add_feeds_to_cerebro
+        from alphaevolve.evaluator.loader import load_ohlc, add_feeds_to_cerebro
         import backtrader as bt
 
         symbols = ("SPY", "EFA", "IEF", "VNQ", "GSG")
