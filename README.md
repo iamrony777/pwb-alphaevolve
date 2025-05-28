@@ -90,7 +90,7 @@ pip install pwb-alphaevolve
 Or install the bleeding‑edge version:
 
 ```bash
-pip install git+https://github.com/your‑org/pwb-alphaevolve.git
+pip install git+https://github.com/paperswithbacktest/pwb-alphaevolve.git
 ```
 
 ### Core Dependencies
