@@ -24,6 +24,19 @@ class Settings(BaseSettings):
     # Storage
     sqlite_db: str = Field("~/.alphaevolve/programs.db", env="SQLITE_DB")
 
+    # ------------------------------------------------------------------
+    # Evolutionary parameters
+    # ------------------------------------------------------------------
+    population_size: int = Field(1000, env="POPULATION_SIZE")
+    archive_size: int = Field(100, env="ARCHIVE_SIZE")
+    num_islands: int = Field(5, env="NUM_ISLANDS")
+
+    # Selection parameters
+    elite_selection_ratio: float = Field(0.1, env="ELITE_SELECTION_RATIO")
+    exploration_ratio: float = Field(0.2, env="EXPLORATION_RATIO")
+    exploitation_ratio: float = Field(0.7, env="EXPLOITATION_RATIO")
+    diversity_metric: str = Field("edit_distance", env="DIVERSITY_METRIC")
+
 
 
     class Config:
