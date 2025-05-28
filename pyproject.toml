@@ -69,12 +69,8 @@ include = [
 ]
 
 # ---------------------------------------------------------------------
-# Console‑script entry points
+# Console‑script entry points (none for now)
 # ---------------------------------------------------------------------
-[project.scripts]
-run-controller = "alpha_trader.scripts.run_controller:main"
-quick-backtest = "alpha_trader.scripts.quick_backtest:main"
-
 # ---------------------------------------------------------------------
 # Tool configurations (style, lint) kept local to PyPI package
 # ---------------------------------------------------------------------

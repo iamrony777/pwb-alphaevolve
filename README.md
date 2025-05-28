@@ -43,9 +43,9 @@ from alphaevolve import AlphaEvolve
 
 # Initialize the system
 evolve = AlphaEvolve(
-    initial_program_path="path/to/initial_strategy.py",
+    initial_program_path="example/sma_momentum.py",
     evaluation_file="path/to/evaluator.py",
-    config_path="path/to/config.yaml"
+    config_path="example/config.py"
 )
 
 # Run the evolution

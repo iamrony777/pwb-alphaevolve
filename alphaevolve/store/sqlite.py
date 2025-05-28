@@ -14,7 +14,7 @@ import os, sqlite3, uuid, json, time, random
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
-from alphaevolve.config import settings
+from example import config as example_config
 
 
 class ProgramStore:
@@ -77,7 +77,7 @@ class ProgramStore:
         return self._row_to_dict(row) if row else None
 
     def top_k(
-        self, k: int = 5, metric: str = settings.hof_metric
+        self, k: int = 5, metric: str = example_config.HOF_METRIC
     ) -> List[Dict[str, Any]]:
         cur = self.conn.execute("SELECT * FROM programs WHERE metrics IS NOT NULL")
         rows = [self._row_to_dict(r) for r in cur.fetchall()]

@@ -15,7 +15,7 @@ from typing import Any, Sequence, Dict
 import backtrader as bt
 import pandas as pd
 
-from alphaevolve.config import settings
+from example import config as example_config
 from alphaevolve.data.loader import load_ohlc, add_feeds_to_cerebro
 from alphaevolve.utils import metrics as mt
 
@@ -56,9 +56,9 @@ def _find_strategy(mod: types.ModuleType) -> type[bt.Strategy]:
 
 
 def _run_backtest(
-    strategy_cls: type[bt.Strategy], symbols: Sequence[str] = settings.default_symbols
+    strategy_cls: type[bt.Strategy], symbols: Sequence[str] = example_config.DEFAULT_SYMBOLS
 ) -> Dict[str, Any]:
-    df = load_ohlc(tuple(symbols), start=settings.start_date)
+    df = load_ohlc(tuple(symbols), start=example_config.START_DATE)
     cerebro = bt.Cerebro()
     add_feeds_to_cerebro(df, cerebro)
     cerebro.addstrategy(strategy_cls)
@@ -89,7 +89,7 @@ def _run_backtest(
 # PUBLIC API
 # ------------------------------------------------------------------ #
 def evaluate_sync(
-    code: str, *, symbols: Sequence[str] = settings.default_symbols
+    code: str, *, symbols: Sequence[str] = example_config.DEFAULT_SYMBOLS
 ) -> Dict[str, Any]:
     """Blocking evaluation; raises on errors (handled by controller)."""
     mod = _load_module_from_code(code)
@@ -98,7 +98,7 @@ def evaluate_sync(
 
 
 async def evaluate(
-    code: str, *, symbols: Sequence[str] = settings.default_symbols
+    code: str, *, symbols: Sequence[str] = example_config.DEFAULT_SYMBOLS
 ) -> Dict[str, Any]:
     """
     Async wrapper so the evolution controller can `await`.
