@@ -21,6 +21,7 @@ from typing import Any
 
 from alphaevolve.evolution.prompt_ga import PromptGenome
 from alphaevolve.store.sqlite import ProgramStore
+from examples import config as example_config
 
 SYSTEM_MSG = """\
 You are Alpha-Trader Evolution-Engine.  You mutate algorithmic-trading
@@ -50,7 +51,7 @@ Parent code (trimmed):
 {parent_code}
 ```
 
-Hall-of-fame excerpt (top {k} Sharpe):
+Hall-of-fame excerpt (top {k} {metric}):
 {hof}
 
 Task:
@@ -66,8 +67,8 @@ def _format_metrics(metrics: dict[str, Any] | None) -> str:
     return "\n".join(f"  {k}: {v:.4g}" for k, v in metrics.items())
 
 
-def _format_hof(store: ProgramStore, k: int = 3) -> str:
-    rows = store.top_k(k=k)
+def _format_hof(store: ProgramStore, k: int = 3, *, metric: str = example_config.HOF_METRIC) -> str:
+    rows = store.top_k(k=k, metric=metric)
     if not rows:
         return "  (empty – still warming up)"
     lines = []
@@ -82,8 +83,9 @@ def _format_hof(store: ProgramStore, k: int = 3) -> str:
 def build(
     parent: dict[str, Any] | None,
     store: ProgramStore,
+    metric: str = example_config.HOF_METRIC,
     prompt: PromptGenome | None = None,
-) -> list[dict[str, str]]:
+) -> List[Dict[str, str]]:
     """Return messages list ready for openai.ChatCompletion."""
     prompt = prompt or PromptGenome(system_msg=SYSTEM_MSG, user_template=USER_TEMPLATE)
     today = datetime.utcnow().date().isoformat()
@@ -94,8 +96,9 @@ def build(
         today=today,
         metrics_tbl=_format_metrics(parent["metrics"] if parent else None),
         parent_code=parent_code or "(root seed – no parent)",
-        hof=_format_hof(store, k=3),
+        hof=_format_hof(store, k=3, metric=metric),
         k=3,
+        metric=metric,
     )
     return [
         {"role": "system", "content": prompt.system_msg},

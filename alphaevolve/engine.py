@@ -9,6 +9,7 @@ from typing import Any
 
 from alphaevolve.evolution.controller import Controller
 from alphaevolve.store.sqlite import ProgramStore
+from examples import settings as example_settings
 
 __all__ = ["AlphaEvolve", "Strategy"]
 
@@ -33,13 +34,26 @@ class AlphaEvolve:
     ) -> None:
         self.initial_program_paths = [Path(p) for p in initial_program_paths]
         self.store = store or ProgramStore()
-        self.controller = Controller(self.store, initial_program_paths=self.initial_program_paths)
+        metrics = (
+            example_settings.BRANCH_METRICS
+            if example_settings.MULTI_BRANCH_MUTATION
+            else [None]
+        )
+        self.controllers = [
+            Controller(
+                self.store,
+                initial_program_paths=self.initial_program_paths,
+                metric=m,
+            )
+            for m in metrics
+        ]
 
     async def run(self, iterations: int = 1) -> Strategy:
         """Run the evolution loop for a fixed number of iterations."""
         for _ in range(iterations):
-            await self.controller._spawn(None)  # type: ignore[attr-defined]
-            await asyncio.sleep(0.01)
+            for ctrl in self.controllers:
+                await ctrl._spawn(None)  # type: ignore[attr-defined]
+                await asyncio.sleep(0.01)
         best = self.store.top_k(k=1)
         if not best:
             raise RuntimeError("No strategies generated")

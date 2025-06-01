@@ -17,9 +17,7 @@ openai.api_key = settings.openai_api_key
 async_client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
 
 
-@backoff.on_exception(
-    backoff.expo, openai.OpenAIError, max_tries=5, jitter=backoff.full_jitter
-)
+@backoff.on_exception(backoff.expo, openai.OpenAIError, max_tries=5, jitter=backoff.full_jitter)
 async def chat(messages: List[Dict[str, str]], **kw) -> Any:
     """Call OpenAI chat completion returning the `message` object of first choice."""
     # ensure response_format enforced
@@ -27,7 +25,7 @@ async def chat(messages: List[Dict[str, str]], **kw) -> Any:
     params = dict(
         model=settings.openai_model,
         messages=messages,
-        max_tokens=settings.max_completion_tokens,
+        max_completion_tokens=settings.max_completion_tokens,
         response_format=response_format,
     )
     params.update(kw)

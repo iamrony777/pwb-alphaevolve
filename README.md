@@ -39,18 +39,7 @@ $ export HF_ACCESS_TOKEN=hf_
 Launch the evolution controller (infinite loop)
 
 ```python
-from alphaevolve import AlphaEvolve
-
-# Initialize the system
-evolve = AlphaEvolve(
-    initial_program_paths=["examples/sma_momentum.py"]
-)
-
-# Run the evolution
-best_strategy = await evolve.run(iterations=1000)
-print(f"Best strategy metrics:")
-for name, value in best_strategy.metrics.items():
-    print(f"  {name}: {value:.4f}")
+python scripts/run_example.py
 ```
 
 Monitor the evolution process in real‑time using the optional Streamlit dashboard:
