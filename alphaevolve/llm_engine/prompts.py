@@ -15,13 +15,13 @@ return:
     { "code": "<full python code>" }
 """
 
-import textwrap, json
+import textwrap
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Any
 
+from alphaevolve.evolution.prompt_ga import PromptGenome
 from alphaevolve.store.sqlite import ProgramStore
 from examples import config as example_config
-
 
 SYSTEM_MSG = """\
 You are Alpha-Trader Evolution-Engine.  You mutate algorithmic-trading
@@ -61,7 +61,7 @@ Task:
 """
 
 
-def _format_metrics(metrics: Dict[str, Any] | None) -> str:
+def _format_metrics(metrics: dict[str, Any] | None) -> str:
     if not metrics:
         return "  (none yet – seed strategy)"
     return "\n".join(f"  {k}: {v:.4g}" for k, v in metrics.items())
@@ -75,26 +75,24 @@ def _format_hof(store: ProgramStore, k: int = 3, *, metric: str = example_config
     for r in rows:
         m = r["metrics"]
         lines.append(
-            f"  Sharpe {m['sharpe']:.3f} | Calmar {m['calmar']:.3f} | "
-            f"CAGR {m['cagr']:.2%}"
+            f"  Sharpe {m['sharpe']:.3f} | Calmar {m['calmar']:.3f} | " f"CAGR {m['cagr']:.2%}"
         )
     return "\n".join(lines)
 
 
 def build(
-    parent: Dict[str, Any] | None,
+    parent: dict[str, Any] | None,
     store: ProgramStore,
-    *,
     metric: str = example_config.HOF_METRIC,
+    prompt: PromptGenome | None = None,
 ) -> List[Dict[str, str]]:
     """Return messages list ready for openai.ChatCompletion."""
+    prompt = prompt or PromptGenome(system_msg=SYSTEM_MSG, user_template=USER_TEMPLATE)
     today = datetime.utcnow().date().isoformat()
-    parent_code = textwrap.indent(
-        textwrap.dedent(parent["code"] if parent else ""), "    "
-    )[
+    parent_code = textwrap.indent(textwrap.dedent(parent["code"] if parent else ""), "    ")[
         :4000
     ]  # truncate for token safety
-    user_msg = USER_TEMPLATE.format(
+    user_msg = prompt.user_template.format(
         today=today,
         metrics_tbl=_format_metrics(parent["metrics"] if parent else None),
         parent_code=parent_code or "(root seed – no parent)",
@@ -103,6 +101,6 @@ def build(
         metric=metric,
     )
     return [
-        {"role": "system", "content": SYSTEM_MSG},
+        {"role": "system", "content": prompt.system_msg},
         {"role": "user", "content": user_msg},
     ]

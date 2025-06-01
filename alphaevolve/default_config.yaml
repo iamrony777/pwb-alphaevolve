@@ -7,3 +7,6 @@ elite_selection_ratio: 0.1
 exploration_ratio: 0.2
 exploitation_ratio: 0.7
 diversity_metric: edit_distance
+prompt_population_size: 50
+prompt_mutation_rate: 0.3
+prompt_iterations: 5

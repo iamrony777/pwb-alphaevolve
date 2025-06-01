@@ -62,18 +62,34 @@ def _setup_controller(tmp_path, diff_content, metrics, population_size=5):
     def load_mod(name, path):
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
+        sys.modules[name] = mod
         spec.loader.exec_module(mod)
         _install(name, mod, installed)
         return mod
 
-    store_mod = load_mod("alphaevolve.store.sqlite", ROOT / "alphaevolve/store/sqlite.py")
-    patch_mod = load_mod("alphaevolve.evolution.patching", ROOT / "alphaevolve/evolution/patching.py")
-    prompts_mod = load_mod("alphaevolve.llm_engine.prompts", ROOT / "alphaevolve/llm_engine/prompts.py")
+    store_mod = load_mod(
+        "alphaevolve.store.sqlite",
+        ROOT / "alphaevolve/store/sqlite.py",
+    )
+    patch_mod = load_mod(
+        "alphaevolve.evolution.patching",
+        ROOT / "alphaevolve/evolution/patching.py",
+    )
+    prompt_ga_mod = load_mod(
+        "alphaevolve.evolution.prompt_ga",
+        ROOT / "alphaevolve/evolution/prompt_ga.py",
+    )
+    prompts_mod = load_mod(
+        "alphaevolve.llm_engine.prompts",
+        ROOT / "alphaevolve/llm_engine/prompts.py",
+    )
 
     # stubs that depend on runtime values
     openai_client = types.ModuleType("alphaevolve.llm_engine.openai_client")
+
     async def chat(messages, **kw):
         return types.SimpleNamespace(content=diff_content)
+
     openai_client.chat = chat
     _install("alphaevolve.llm_engine.openai_client", openai_client, installed)
 
@@ -81,8 +97,10 @@ def _setup_controller(tmp_path, diff_content, metrics, population_size=5):
     # ensure metrics include keys used by prompts._format_hof
     base_metrics = {"sharpe": 0.0, "calmar": 0.0, "cagr": 0.0}
     base_metrics.update(metrics)
+
     async def evaluate(code, *, symbols=None):
         return base_metrics
+
     evaluator_mod.evaluate = evaluate
     _install("alphaevolve.evaluator.backtest", evaluator_mod, installed)
 
@@ -108,6 +126,7 @@ def _setup_controller(tmp_path, diff_content, metrics, population_size=5):
     evolution_pkg = types.ModuleType("alphaevolve.evolution")
     evolution_pkg.__path__ = []
     evolution_pkg.patching = patch_mod
+    evolution_pkg.prompt_ga = prompt_ga_mod
     _install("alphaevolve.evolution", evolution_pkg, installed)
 
     strat_pkg = types.ModuleType("alphaevolve.strategies")
@@ -126,11 +145,19 @@ def _setup_controller(tmp_path, diff_content, metrics, population_size=5):
     alpha_pkg.evaluator.backtest = evaluator_mod
     _install("alphaevolve", alpha_pkg, installed)
 
-    ctrl_mod = load_mod("alphaevolve.evolution.controller", ROOT / "alphaevolve/evolution/controller.py")
+    ctrl_mod = load_mod(
+        "alphaevolve.evolution.controller",
+        ROOT / "alphaevolve/evolution/controller.py",
+    )
     Controller = ctrl_mod.Controller
     ProgramStore = ctrl_mod.ProgramStore
 
-    store = ProgramStore(tmp_path / "db.sqlite", population_size=population_size, archive_size=0, num_islands=1)
+    store = ProgramStore(
+        tmp_path / "db.sqlite",
+        population_size=population_size,
+        archive_size=0,
+        num_islands=1,
+    )
     seed_code = (
         "def foo():\n"
         "    # === EVOLVE-BLOCK: logic ===\n"
@@ -167,7 +194,7 @@ def test_controller_stores_metrics(tmp_path):
     ctrl, store, installed = _setup_controller(tmp_path, diff, metrics)
     try:
         asyncio.run(_run_spawn(ctrl))
-        child = [r for r in store.top_k(k=1)][0]
+        child = list(store.top_k(k=1))[0]
         for k, v in metrics.items():
             assert child["metrics"][k] == v
     finally:
