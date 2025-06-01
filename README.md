@@ -71,7 +71,7 @@ scripts/           # CLI entry‑points
 
 The `PromptGenome` dataclass allows the LLM instructions themselves to be
 evolved using a genetic algorithm. Set `ENABLE_PROMPT_EVOLUTION = True` in
-`examples/settings.py` to try this feature. New prompts are mutated, evaluated
+`examples/config.py` to try this feature. New prompts are mutated, evaluated
 for a few iterations and stored in a separate SQLite database.
 
 ---
