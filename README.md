@@ -60,7 +60,35 @@ pip install git+https://github.com/paperswithbacktest/pwb-alphaevolve.git
 * openai ≥ 1.0 (structured output)
 * tqdm, pandas, numpy, pydantic
 
+
 (See `pyproject.toml` for the full list.)
+
+---
+
+## 🦙 Using Local LLMs
+
+AlphaEvolve can operate without OpenAI by loading a HuggingFace model or by
+forwarding requests to an OpenAI-compatible server. Install the optional
+dependencies and download a model first:
+
+```bash
+pip install transformers accelerate bitsandbytes
+huggingface-cli download microsoft/phi-2 --local-dir ~/.cache/phi-2
+```
+
+Configure the environment to use the local backend:
+
+```bash
+export LLM_BACKEND=local
+export LOCAL_MODEL_PATH=~/.cache/phi-2  # or set LOCAL_MODEL_NAME
+# LOCAL_SERVER_URL=http://localhost:8000  # optional OpenAI-style server
+```
+
+Run the evolution loop with the local model:
+
+```bash
+python scripts/run_example.py
+```
 
 ---
 
