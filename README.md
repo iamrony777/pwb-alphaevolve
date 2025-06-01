@@ -39,6 +39,7 @@ $ export HF_ACCESS_TOKEN=hf_
 Launch the evolution controller (infinite loop)
 
 ```python
+import asyncio
 from alphaevolve import AlphaEvolve
 
 # Initialize the system
@@ -47,10 +48,13 @@ evolve = AlphaEvolve(
 )
 
 # Run the evolution
-best_strategy = await evolve.run(iterations=1000)
-print(f"Best strategy metrics:")
-for name, value in best_strategy.metrics.items():
-    print(f"  {name}: {value:.4f}")
+async def main():
+    best_strategy = await evolve.run(iterations=10)
+    print("Best strategy metrics:")
+    for name, value in best_strategy.metrics.items():
+        print(f"  {name}: {value:.4f}")
+
+asyncio.run(main())
 ```
 
 Monitor the evolution process in real‑time using the optional Streamlit dashboard:
