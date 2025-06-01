@@ -46,6 +46,7 @@ def _setup(tmp_path, messages_holder):
         prompt_population_size=5,
         prompt_mutation_rate=1.0,
         prompt_iterations=1,
+        llm_backend="openai",
     )
     sys.modules["alphaevolve.config"] = config_mod
     installed.append(("alphaevolve.config", None))
@@ -107,17 +108,17 @@ def _setup(tmp_path, messages_holder):
     sys.modules["alphaevolve.strategies.base"] = base_mod
     installed.append(("alphaevolve.strategies.base", None))
 
-    openai_client = types.ModuleType("alphaevolve.llm_engine.openai_client")
+    client = types.SimpleNamespace()
 
     async def chat(messages, **kw):
         messages_holder.append(messages)
         return types.SimpleNamespace(content='{"code": "pass"}')
 
-    openai_client.chat = chat
+    client.chat = chat
     llm_pkg = types.ModuleType("alphaevolve.llm_engine")
     llm_pkg.__path__ = []
     llm_pkg.prompts = prompts_mod
-    llm_pkg.openai_client = openai_client
+    llm_pkg.client = client
     sys.modules["alphaevolve.llm_engine"] = llm_pkg
     installed.append(("alphaevolve.llm_engine", None))
 

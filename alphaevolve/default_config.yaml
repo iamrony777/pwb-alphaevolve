@@ -10,3 +10,4 @@ diversity_metric: edit_distance
 prompt_population_size: 50
 prompt_mutation_rate: 0.3
 prompt_iterations: 5
+llm_backend: openai

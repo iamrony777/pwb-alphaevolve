@@ -18,15 +18,14 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from alphaevolve.config import settings
-from alphaevolve.llm_engine import prompts, openai_client
-from examples import config as example_config
-from alphaevolve.evolution.patching import apply_patch
 from alphaevolve.evaluator.backtest import evaluate
 from alphaevolve.evolution.patching import apply_patch
 from alphaevolve.evolution.prompt_ga import PromptGenome
-from alphaevolve.llm_engine import openai_client, prompts
+from alphaevolve.llm_engine import client as llm_client
+from alphaevolve.llm_engine import prompts
 from alphaevolve.store.sqlite import ProgramStore
 from alphaevolve.strategies.base import BaseLoggingStrategy
+from examples import config as example_config
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +106,7 @@ class Controller:
             # 2) Build prompt & call OpenAI
             messages = prompts.build(parent, self.store, metric=self.metric, prompt=prompt)
             try:
-                msg = await openai_client.chat(messages)
+                msg = await llm_client.chat(messages)
             except Exception as e:
                 logger.error(f"OpenAI call failed: {e}")
                 return
@@ -139,9 +138,7 @@ class Controller:
                 parent_id=parent["id"],
                 island=parent.get("island", 0),
             )
-            logger.info(
-                "Child stored (%s %.2f)", self.metric, kpis.get(self.metric, 0)
-            )
+            logger.info("Child stored (%s %.2f)", self.metric, kpis.get(self.metric, 0))
 
     # ------------------------------------------------------------------
     # public API
