@@ -16,6 +16,7 @@ from alphaevolve.strategies.base import BaseLoggingStrategy
 from alphaevolve.store.sqlite import ProgramStore
 from alphaevolve.config import settings
 from alphaevolve.llm_engine import prompts, openai_client
+from examples import config as example_config
 from alphaevolve.evolution.patching import apply_patch
 from alphaevolve.evaluator.backtest import evaluate
 
@@ -28,11 +29,13 @@ class Controller:
         store: ProgramStore,
         *,
         initial_program_paths: Sequence[str | Path] | None = None,
+        metric: str | None = None,
         max_concurrency: int = 4,
     ):
         self.store = store
         self.sem = asyncio.Semaphore(max_concurrency)
         self.initial_program_paths = [Path(p) for p in initial_program_paths or []]
+        self.metric = metric or example_config.HOF_METRIC
         self._ensure_seed_population()
 
     # ------------------------------------------------------------------
@@ -69,11 +72,11 @@ class Controller:
             return self.store.get(parent_id)
         r = random.random()
         if r < settings.elite_selection_ratio:
-            elites = self.store.top_k(k=settings.archive_size)
+            elites = self.store.top_k(k=settings.archive_size, metric=self.metric)
             return random.choice(elites) if elites else self.store.sample()
         r -= settings.elite_selection_ratio
         if r < settings.exploitation_ratio:
-            best = self.store.top_k(k=1)
+            best = self.store.top_k(k=1, metric=self.metric)
             return best[0] if best else self.store.sample()
         r -= settings.exploitation_ratio
         if r < settings.exploration_ratio:
@@ -91,7 +94,7 @@ class Controller:
                 return
 
             # 2) Build prompt & call OpenAI
-            messages = prompts.build(parent, self.store)
+            messages = prompts.build(parent, self.store, metric=self.metric)
             try:
                 msg = await openai_client.chat(messages)
             except Exception as e:
@@ -125,7 +128,9 @@ class Controller:
                 parent_id=parent["id"],
                 island=parent.get("island", 0),
             )
-            logger.info("Child stored – Sharpe %.2f", kpis.get("sharpe", 0))
+            logger.info(
+                "Child stored (%s %.2f)", self.metric, kpis.get(self.metric, 0)
+            )
 
     # ------------------------------------------------------------------
     # public API
