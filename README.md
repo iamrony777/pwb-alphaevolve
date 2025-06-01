@@ -9,19 +9,6 @@
 
 ---
 
-## ✨ Key Features
-
-| Layer      | Highlights                                                                                  |
-| ---------- | ------------------------------------------------------------------------------------------- |
-| Data       | Zero‑setup loader for any Papers‑With‑Backtest dataset (`pwb_toolbox`) + caching to Feather |
-| Strategies | Seed templates with **EVOLVE‑BLOCK** markers that the LLM mutates                           |
-| Evaluator  | Deterministic Backtrader walk‑forward, JSON KPIs (Sharpe, CAGR, Calmar, DD)                 |
-| LLM Engine | OpenAI o3 structured‑output chat → JSON diff/patch system                                   |
-| Evolution  | Async controller, SQLite hall‑of‑fame, optional MAP‑Elites niches                           |
-| Dashboard  | (optional) Streamlit live view of metrics & equity curves                                   |
-
----
-
 ## 🚀 Quickstart
 
 ```bash
@@ -36,7 +23,7 @@ $ export OPENAI_API_KEY=sk-...
 $ export HF_ACCESS_TOKEN=hf_
 ```
 
-Launch the evolution controller (infinite loop)
+Launch the evolution controller
 
 ```python
 python scripts/run_example.py
@@ -49,30 +36,6 @@ $ streamlit run scripts/dashboard.py
 ```
 
 The dashboard uses Streamlit to visualize the evolution process and back‑test results.
-
----
-
-## 📂 Project structure (high‑level)
-
-```
-alphaevolve/
-├── engine.py      # convenience wrapper to run the evolution loop
-├── evaluator/     # data loading, metrics & Backtrader evaluation
-├── evolution/     # controller, patching, islands
-├── llm_engine/    # prompt builder + OpenAI client
-├── strategies/    # seed strategies (EVOLVE‑BLOCK markers)
-└── store/         # SQLite persistence
-scripts/           # CLI entry‑points
-```
-
----
-
-## Prompt Evolution
-
-The `PromptGenome` dataclass allows the LLM instructions themselves to be
-evolved using a genetic algorithm. Set `ENABLE_PROMPT_EVOLUTION = True` in
-`examples/settings.py` to try this feature. New prompts are mutated, evaluated
-for a few iterations and stored in a separate SQLite database.
 
 ---
 
@@ -101,6 +64,43 @@ pip install git+https://github.com/paperswithbacktest/pwb-alphaevolve.git
 
 ---
 
+
+## ✨ Key Features
+
+| Layer      | Highlights                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| Data       | Zero‑setup loader for any Papers‑With‑Backtest dataset (`pwb_toolbox`) + caching to Feather |
+| Strategies | Seed templates with **EVOLVE‑BLOCK** markers that the LLM mutates                           |
+| Evaluator  | Deterministic Backtrader walk‑forward, JSON KPIs (Sharpe, CAGR, Calmar, DD)                 |
+| LLM Engine | OpenAI o3 structured‑output chat → JSON diff/patch system                                   |
+| Evolution  | Async controller, SQLite hall‑of‑fame, optional MAP‑Elites niches                           |
+| Dashboard  | (optional) Streamlit live view of metrics & equity curves                                   |
+
+---
+
+## 📂 Project structure (high‑level)
+
+```
+alphaevolve/
+├── engine.py      # convenience wrapper to run the evolution loop
+├── evaluator/     # data loading, metrics & Backtrader evaluation
+├── evolution/     # controller, patching, islands
+├── llm_engine/    # prompt builder + OpenAI client
+├── strategies/    # seed strategies (EVOLVE‑BLOCK markers)
+└── store/         # SQLite persistence
+scripts/           # CLI entry‑points
+```
+
+---
+
+## Prompt Evolution
+
+The `PromptGenome` dataclass allows the LLM instructions themselves to be
+evolved using a genetic algorithm. Set `ENABLE_PROMPT_EVOLUTION = True` in
+`examples/settings.py` to try this feature. New prompts are mutated, evaluated
+for a few iterations and stored in a separate SQLite database.
+
+---
 
 ## 🤝 Contributing
 
