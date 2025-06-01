@@ -25,9 +25,11 @@ def test_alphaevolve_multi_branch_creates_controllers():
 
     # stub ProgramStore
     store_mod = types.ModuleType("alphaevolve.store.sqlite")
+
     class DummyStore:
         def __init__(self, *a, **kw):
             pass
+
     store_mod.ProgramStore = DummyStore
     _install("alphaevolve.store.sqlite", store_mod, installed)
 
@@ -38,9 +40,11 @@ def test_alphaevolve_multi_branch_creates_controllers():
 
     # stub Controller
     ctrl_mod = types.ModuleType("alphaevolve.evolution.controller")
+
     class DummyController:
         def __init__(self, store, *, initial_program_paths=None, metric=None, max_concurrency=4):
             self.metric = metric
+
     ctrl_mod.Controller = DummyController
     _install("alphaevolve.evolution.controller", ctrl_mod, installed)
 
@@ -49,17 +53,19 @@ def test_alphaevolve_multi_branch_creates_controllers():
     evo_pkg.controller = ctrl_mod
     _install("alphaevolve.evolution", evo_pkg, installed)
 
-    # stub example settings
-    ex_settings = types.ModuleType("examples.settings")
-    ex_settings.MULTI_BRANCH_MUTATION = True
-    ex_settings.BRANCH_METRICS = ["a", "b"]
+    # stub example config
+    ex_cfg = types.ModuleType("examples.config")
+    ex_cfg.MULTI_BRANCH_MUTATION = True
+    ex_cfg.BRANCH_METRICS = ["a", "b"]
     ex_pkg = types.ModuleType("examples")
-    ex_pkg.settings = ex_settings
+    ex_pkg.config = ex_cfg
     _install("examples", ex_pkg, installed)
-    _install("examples.settings", ex_settings, installed)
+    _install("examples.config", ex_cfg, installed)
 
     try:
-        spec = importlib.util.spec_from_file_location("alphaevolve.engine", ROOT / "alphaevolve/engine.py")
+        spec = importlib.util.spec_from_file_location(
+            "alphaevolve.engine", ROOT / "alphaevolve/engine.py"
+        )
         engine = importlib.util.module_from_spec(spec)
         _install("alphaevolve.engine", engine, installed)
         spec.loader.exec_module(engine)
@@ -69,4 +75,3 @@ def test_alphaevolve_multi_branch_creates_controllers():
         assert [c.metric for c in ae.controllers] == ["a", "b"]
     finally:
         _cleanup(installed)
-

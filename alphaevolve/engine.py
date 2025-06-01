@@ -9,7 +9,7 @@ from typing import Any
 
 from alphaevolve.evolution.controller import Controller
 from alphaevolve.store.sqlite import ProgramStore
-from examples import settings as example_settings
+from examples import config as example_settings
 
 __all__ = ["AlphaEvolve", "Strategy"]
 
@@ -35,9 +35,7 @@ class AlphaEvolve:
         self.initial_program_paths = [Path(p) for p in initial_program_paths]
         self.store = store or ProgramStore()
         metrics = (
-            example_settings.BRANCH_METRICS
-            if example_settings.MULTI_BRANCH_MUTATION
-            else [None]
+            example_settings.BRANCH_METRICS if example_settings.MULTI_BRANCH_MUTATION else [None]
         )
         self.controllers = [
             Controller(
