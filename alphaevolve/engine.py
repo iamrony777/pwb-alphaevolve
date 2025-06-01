@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """High-level evolution interface."""
+
+from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from alphaevolve.evolution.controller import Controller
 from alphaevolve.store.sqlite import ProgramStore

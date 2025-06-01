@@ -24,6 +24,10 @@ class Settings(BaseSettings):
 
     # Storage
     sqlite_db: str = Field("~/.alphaevolve/programs.db", env="SQLITE_DB")
+    prompt_population_size: int = Field(50, env="PROMPT_POPULATION_SIZE")
+    prompt_mutation_rate: float = Field(0.3, env="PROMPT_MUTATION_RATE")
+    prompt_iterations: int = Field(5, env="PROMPT_ITERATIONS")
+    prompt_sqlite_db: str = Field("~/.alphaevolve/prompts.db", env="PROMPT_SQLITE_DB")
 
     # ------------------------------------------------------------------
     # Evolutionary parameters

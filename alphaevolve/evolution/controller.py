@@ -8,16 +8,22 @@ High‑level loop:
 5. Insert child into store (which updates MAP‑Elites grid).
 """
 
-import asyncio, json, inspect, logging, random, textwrap
+import asyncio
+import inspect
+import json
+import logging
+import random
+import textwrap
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Optional, Sequence
 
-from alphaevolve.strategies.base import BaseLoggingStrategy
-from alphaevolve.store.sqlite import ProgramStore
 from alphaevolve.config import settings
-from alphaevolve.llm_engine import prompts, openai_client
-from alphaevolve.evolution.patching import apply_patch
 from alphaevolve.evaluator.backtest import evaluate
+from alphaevolve.evolution.patching import apply_patch
+from alphaevolve.evolution.prompt_ga import PromptGenome
+from alphaevolve.llm_engine import openai_client, prompts
+from alphaevolve.store.sqlite import ProgramStore
+from alphaevolve.strategies.base import BaseLoggingStrategy
 
 logger = logging.getLogger(__name__)
 
@@ -29,10 +35,12 @@ class Controller:
         *,
         initial_program_paths: Sequence[str | Path] | None = None,
         max_concurrency: int = 4,
+        prompt: PromptGenome | None = None,
     ):
         self.store = store
         self.sem = asyncio.Semaphore(max_concurrency)
         self.initial_program_paths = [Path(p) for p in initial_program_paths or []]
+        self.prompt = prompt or PromptGenome(prompts.SYSTEM_MSG, prompts.USER_TEMPLATE)
         self._ensure_seed_population()
 
     # ------------------------------------------------------------------
@@ -64,7 +72,7 @@ class Controller:
             )
         logger.info("Seed strategies inserted into store.")
 
-    def _select_parent(self, parent_id: Optional[str]):
+    def _select_parent(self, parent_id: str | None):
         if parent_id:
             return self.store.get(parent_id)
         r = random.random()
@@ -81,8 +89,9 @@ class Controller:
             return self.store.sample(island=island)
         return self.store.sample()
 
-    async def _spawn(self, parent_id: Optional[str]):
+    async def _spawn(self, parent_id: str | None, *, prompt: PromptGenome | None = None):
         """Generate, evaluate & store one child strategy."""
+        prompt = prompt or self.prompt
         async with self.sem:
             # 1) Select parent
             parent = self._select_parent(parent_id)
@@ -91,7 +100,7 @@ class Controller:
                 return
 
             # 2) Build prompt & call OpenAI
-            messages = prompts.build(parent, self.store)
+            messages = prompts.build(parent, self.store, prompt)
             try:
                 msg = await openai_client.chat(messages)
             except Exception as e:
@@ -133,12 +142,12 @@ class Controller:
     async def run_forever(self):
         """Continuous evolution loop (no termination)."""
         while True:
-            await self._spawn(None)
+            await self._spawn(None, prompt=self.prompt)
             # Optional: back‑off to be polite to API limits when concurrency=1
             await asyncio.sleep(0.01)
 
     async def run(self, iterations: int) -> None:
         """Run the evolution loop for a fixed number of iterations."""
         for _ in range(iterations):
-            await self._spawn(None)
+            await self._spawn(None, prompt=self.prompt)
             await asyncio.sleep(0.01)
