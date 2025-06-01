@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     openai_api_key: str = Field(..., env="OPENAI_API_KEY")
     openai_model: str = Field("o3-mini", env="OPENAI_MODEL")
     max_completion_tokens: int = Field(4096, env="MAX_COMPLETION_TOKENS")
+    llm_backend: str = Field("openai", env="LLM_BACKEND")
 
     # Storage
     sqlite_db: str = Field("~/.alphaevolve/programs.db", env="SQLITE_DB")

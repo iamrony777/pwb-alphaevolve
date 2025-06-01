@@ -55,6 +55,7 @@ def _setup_controller(tmp_path, diff_content, metrics, population_size=5):
         elite_selection_ratio=0.1,
         exploration_ratio=0.2,
         exploitation_ratio=0.7,
+        llm_backend="openai",
     )
     _install("alphaevolve.config", config_mod, installed)
 
@@ -85,13 +86,12 @@ def _setup_controller(tmp_path, diff_content, metrics, population_size=5):
     )
 
     # stubs that depend on runtime values
-    openai_client = types.ModuleType("alphaevolve.llm_engine.openai_client")
+    client = types.SimpleNamespace()
 
     async def chat(messages, **kw):
         return types.SimpleNamespace(content=diff_content)
 
-    openai_client.chat = chat
-    _install("alphaevolve.llm_engine.openai_client", openai_client, installed)
+    client.chat = chat
 
     evaluator_mod = types.ModuleType("alphaevolve.evaluator.backtest")
     # ensure metrics include keys used by prompts._format_hof
@@ -115,7 +115,7 @@ def _setup_controller(tmp_path, diff_content, metrics, population_size=5):
     llm_pkg = types.ModuleType("alphaevolve.llm_engine")
     llm_pkg.__path__ = []
     llm_pkg.prompts = prompts_mod
-    llm_pkg.openai_client = openai_client
+    llm_pkg.client = client
     _install("alphaevolve.llm_engine", llm_pkg, installed)
 
     store_pkg = types.ModuleType("alphaevolve.store")

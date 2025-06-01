@@ -85,7 +85,7 @@ def build(
     store: ProgramStore,
     metric: str = example_config.HOF_METRIC,
     prompt: PromptGenome | None = None,
-) -> List[Dict[str, str]]:
+) -> list[dict[str, str]]:
     """Return messages list ready for openai.ChatCompletion."""
     prompt = prompt or PromptGenome(system_msg=SYSTEM_MSG, user_template=USER_TEMPLATE)
     today = datetime.utcnow().date().isoformat()
