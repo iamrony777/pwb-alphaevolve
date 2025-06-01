@@ -5,6 +5,9 @@ Environment variables (defaults in brackets):
 OPENAI_API_KEY    – Required for evolution step (no default)
 OPENAI_MODEL      – Chat model name ["o3-mini"]
 MAX_COMPLETION_TOKENS        – Token cap for LLM replies [4096]
+LOCAL_MODEL_NAME  – HuggingFace model name [None]
+LOCAL_MODEL_PATH  – Path to local model [None]
+LOCAL_SERVER_URL  – OpenAI-compatible server base URL [None]
 
 SQLITE_DB         – Path to SQLite file ["~/.alphaevolve/programs.db"]
 """
@@ -22,6 +25,10 @@ class Settings(BaseSettings):
     openai_model: str = Field("o3-mini", env="OPENAI_MODEL")
     max_completion_tokens: int = Field(4096, env="MAX_COMPLETION_TOKENS")
     llm_backend: str = Field("openai", env="LLM_BACKEND")
+    # Local backend options
+    local_model_name: str | None = Field(None, env="LOCAL_MODEL_NAME")
+    local_model_path: str | None = Field(None, env="LOCAL_MODEL_PATH")
+    local_server_url: str | None = Field(None, env="LOCAL_SERVER_URL")
 
     # Storage
     sqlite_db: str = Field("~/.alphaevolve/programs.db", env="SQLITE_DB")
