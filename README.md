@@ -23,10 +23,10 @@ $ export OPENAI_API_KEY=sk-...
 $ export HF_ACCESS_TOKEN=hf_
 ```
 
-Launch the evolution controller
+Launch the evolution controller (create a fresh experiment)
 
-```python
-python scripts/run_example.py
+```bash
+python scripts/run_example.py --experiment my_exp
 ```
 
 Monitor the evolution process in real‑time using the optional Streamlit dashboard:
@@ -36,6 +36,16 @@ $ streamlit run scripts/dashboard.py
 ```
 
 The dashboard uses Streamlit to visualize the evolution process and back‑test results.
+
+### Managing experiments
+
+Use the `--experiment` option to keep runs separate:
+
+```bash
+python scripts/run_example.py --experiment my_exp
+```
+
+This creates a new SQLite file `my_exp.db` under `~/.alphaevolve/`. The dashboard lists all experiments, allowing you to switch between them or delete one via the **Delete experiment** sidebar button.
 
 ---
 
@@ -87,7 +97,7 @@ export LOCAL_MODEL_PATH=~/.cache/phi-2  # or set LOCAL_MODEL_NAME
 Run the evolution loop with the local model:
 
 ```bash
-python scripts/run_example.py
+python scripts/run_example.py --experiment my_exp
 ```
 
 ---
