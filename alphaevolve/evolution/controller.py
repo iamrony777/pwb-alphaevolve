@@ -120,9 +120,12 @@ class Controller:
 
             child_strategy = apply_patch(parent["code"], diff_json)
 
-            imports = "from collections import deque\nimport backtrader as bt"
-            base_cls = inspect.getsource(BaseLoggingStrategy)
-            child_code = textwrap.dedent(imports + "\n\n" + base_cls + "\n\n" + child_strategy)
+            if "class BaseLoggingStrategy" not in child_strategy:
+                imports = "from collections import deque\nimport backtrader as bt"
+                base_cls = inspect.getsource(BaseLoggingStrategy)
+                child_code = textwrap.dedent(imports + "\n\n" + base_cls + "\n\n" + child_strategy)
+            else:
+                child_code = textwrap.dedent(child_strategy)
 
             # 4) Evaluate
             try:
