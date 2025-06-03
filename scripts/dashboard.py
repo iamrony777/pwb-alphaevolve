@@ -11,12 +11,16 @@ Features
 * Inspect source code in expandable section
 """
 from __future__ import annotations
+import os
 import textwrap
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from pathlib import Path
+
 from alphaevolve.store.sqlite import ProgramStore
+from alphaevolve.config import settings
 from examples import config as example_config
 from alphaevolve.evaluator.backtest import (
     _load_module_from_code,  # type: ignore  (private helper is okay for internal app)
@@ -25,7 +29,21 @@ from alphaevolve.evaluator.backtest import (
 )
 
 st.set_page_config(page_title="Alpha‑Evolve Dashboard", layout="wide")
-store = ProgramStore()
+
+db_dir = Path(settings.sqlite_db).expanduser().parent
+db_files = sorted(db_dir.glob("*.db"))
+experiments = [f.stem for f in db_files]
+if not experiments:
+    st.warning("No experiments found – run the controller first.")
+    st.stop()
+
+selected_exp = st.sidebar.selectbox("Experiment", experiments)
+db_path = db_dir / f"{selected_exp}.db"
+if st.sidebar.button("Delete experiment"):
+    os.remove(db_path)
+    st.experimental_rerun()
+
+store = ProgramStore(db_path)
 
 # ------------------------------------------------------------------
 # Hall of Fame table

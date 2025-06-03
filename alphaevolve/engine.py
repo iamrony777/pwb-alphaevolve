@@ -9,6 +9,7 @@ from typing import Any
 
 from alphaevolve.evolution.controller import Controller
 from alphaevolve.store.sqlite import ProgramStore
+from alphaevolve.config import settings
 from examples import config as example_settings
 
 __all__ = ["AlphaEvolve", "Strategy"]
@@ -31,9 +32,18 @@ class AlphaEvolve:
         initial_program_paths: list[str],
         *,
         store: ProgramStore | None = None,
+        experiment_name: str | None = None,
     ) -> None:
         self.initial_program_paths = [Path(p) for p in initial_program_paths]
-        self.store = store or ProgramStore()
+        if store is not None:
+            self.store = store
+        else:
+            if experiment_name:
+                base = Path(settings.sqlite_db).expanduser()
+                db_path = base.parent / f"{experiment_name}.db"
+                self.store = ProgramStore(db_path=db_path)
+            else:
+                self.store = ProgramStore()
         metrics = (
             example_settings.BRANCH_METRICS if example_settings.MULTI_BRANCH_MUTATION else [None]
         )
