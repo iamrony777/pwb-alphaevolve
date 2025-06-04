@@ -29,19 +29,13 @@ Launch the evolution controller (create a fresh experiment)
 python scripts/run_example.py --experiment my_exp
 ```
 
-Monitor the evolution process in real‑time using the optional Streamlit dashboard:
+Monitor the evolution process in real‑time using the Streamlit GUI:
 
-```bash
-$ streamlit run scripts/dashboard.py
-```
-
-The dashboard uses Streamlit to visualize the evolution process and back‑test results.
-
-Alternatively you can launch and monitor an experiment entirely from the dashboard itself:
 ```bash
 $ streamlit run scripts/gui.py
 ```
-The sidebar lets you paste a seed strategy in a large text area, tune the options from
+
+The GUI lets you paste a seed strategy in a large text area, tune the options from
 `examples/config.py` and pick the number of iterations. Click **Run evolution** to start
 the search and watch the hall‑of‑fame table update live.
 
@@ -53,7 +47,7 @@ Use the `--experiment` option to keep runs separate:
 python scripts/run_example.py --experiment my_exp
 ```
 
-This creates a new SQLite file `my_exp.db` under `~/.alphaevolve/`. The dashboard lists all experiments, allowing you to switch between them or delete one via the **Delete experiment** sidebar button.
+This creates a new SQLite file `my_exp.db` under `~/.alphaevolve/`. The GUI lists all experiments, allowing you to switch between them or delete one via the **Delete experiment** sidebar button.
 
 ---
 

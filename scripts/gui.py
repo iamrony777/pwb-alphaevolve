@@ -22,6 +22,11 @@ from alphaevolve.evaluator.backtest import (
 from alphaevolve.store.sqlite import ProgramStore
 from examples import config as example_config
 
+# Default code shown in the sidebar seed text area
+DEFAULT_SEED_CODE = (
+    Path(__file__).resolve().parent.parent / "examples" / "sma_momentum.py"
+).read_text()
+
 st.set_page_config(page_title="AlphaEvolve", layout="wide")
 
 st.title("🧬 AlphaEvolve GUI")
@@ -31,7 +36,9 @@ st.title("🧬 AlphaEvolve GUI")
 # --------------------------------------------------------------------
 exp_name = st.sidebar.text_input("Experiment", value="my_exp")
 iterations = st.sidebar.number_input("Iterations", 1, 1000, 10, step=1)
-seed_code = st.sidebar.text_area("Seed strategy code", height=300)
+seed_code = st.sidebar.text_area(
+    "Seed strategy code", value=DEFAULT_SEED_CODE, height=300
+)
 TOP_K = st.sidebar.slider("Top K strategies", 3, 50, 10)
 
 # Tune example configuration values
