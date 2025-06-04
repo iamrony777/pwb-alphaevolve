@@ -37,6 +37,14 @@ $ streamlit run scripts/dashboard.py
 
 The dashboard uses Streamlit to visualize the evolution process and back‑test results.
 
+Alternatively you can launch and monitor an experiment entirely from the dashboard itself:
+```bash
+$ streamlit run scripts/gui.py
+```
+The sidebar lets you paste a seed strategy in a large text area, tune the options from
+`examples/config.py` and pick the number of iterations. Click **Run evolution** to start
+the search and watch the hall‑of‑fame table update live.
+
 ### Managing experiments
 
 Use the `--experiment` option to keep runs separate:
