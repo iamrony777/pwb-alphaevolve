@@ -116,8 +116,8 @@ python scripts/run_example.py --experiment my_exp
 | Data       | Zero‑setup loader for any Papers‑With‑Backtest dataset (`pwb_toolbox`) + caching to Feather |
 | Strategies | Seed templates with **EVOLVE‑BLOCK** markers that the LLM mutates                           |
 | Evaluator  | Deterministic Backtrader walk‑forward, JSON KPIs (Sharpe, CAGR, Calmar, DD)                 |
-| LLM Engine | OpenAI o3 structured‑output chat → JSON diff/patch system; prompts push each child to beat its parent |
-| Evolution  | Async controller stores a child only when it improves the chosen metric; SQLite hall‑of‑fame, optional MAP‑Elites niches |
+| LLM Engine | OpenAI o3 structured‑output chat → JSON diff/patch system                                   |
+| Evolution  | Async controller, SQLite hall‑of‑fame, optional MAP‑Elites niches                           |
 | Dashboard  | (optional) Streamlit live view of metrics & equity curves                                   |
 
 ---

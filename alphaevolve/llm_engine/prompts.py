@@ -25,8 +25,7 @@ from examples import config as example_config
 
 SYSTEM_MSG = """\
 You are Alpha-Trader Evolution-Engine.  You mutate algorithmic-trading
-strategies written for Backtrader.  Each new iteration should attempt
-to outperform its parent based on risk-adjusted metrics.  All editable regions are delimited
+strategies written for Backtrader.  All editable regions are delimited
 like this:
 
     # === EVOLVE-BLOCK: <block_name> =================================

@@ -134,26 +134,14 @@ class Controller:
                 logger.error(f"Evaluation failed: {e}")
                 return
 
-            # 5) Persist if improved
-            parent_metrics = parent.get("metrics") or {}
-            parent_val = parent_metrics.get(self.metric)
-            child_val = kpis.get(self.metric)
-
-            if child_val is None or parent_val is None or child_val > parent_val:
-                self.store.insert(
-                    child_code,
-                    kpis,
-                    parent_id=parent["id"],
-                    island=parent.get("island", 0),
-                )
-                logger.info("Child stored (%s %.2f)", self.metric, kpis.get(self.metric, 0))
-            else:
-                logger.info(
-                    "Discarded child (%s %.2f <= %.2f)",
-                    self.metric,
-                    child_val,
-                    parent_val,
-                )
+            # 5) Persist
+            self.store.insert(
+                child_code,
+                kpis,
+                parent_id=parent["id"],
+                island=parent.get("island", 0),
+            )
+            logger.info("Child stored (%s %.2f)", self.metric, kpis.get(self.metric, 0))
 
     # ------------------------------------------------------------------
     # public API

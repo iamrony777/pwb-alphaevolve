@@ -211,27 +211,3 @@ def test_controller_respects_population_limit(tmp_path):
         assert store._count() <= 2
     finally:
         _cleanup(installed)
-
-
-def test_controller_discards_unimproved_child(tmp_path):
-    diff = '{"blocks": {"logic": "b = 2"}}'
-    metrics = {"sharpe": 1.0}
-    ctrl, store, installed = _setup_controller(tmp_path, diff, metrics)
-    try:
-        # first spawn inserts child with sharpe 1.0
-        asyncio.run(_run_spawn(ctrl))
-        child_id = store.top_k(k=1)[0]["id"]
-
-        # make evaluator return worse metrics
-        async def evaluate(_code, *, symbols=None):
-            return {"sharpe": 0.5, "calmar": 0.0, "cagr": 0.0}
-
-        sys.modules["alphaevolve.evaluator.backtest"].evaluate = evaluate
-
-        # spawn from the existing child
-        asyncio.run(ctrl._spawn(child_id))
-
-        # count should remain 2 since new child discarded
-        assert store._count() == 2
-    finally:
-        _cleanup(installed)
