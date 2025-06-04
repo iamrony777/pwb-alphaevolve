@@ -23,6 +23,8 @@ $ export OPENAI_API_KEY=sk-...
 $ export HF_ACCESS_TOKEN=hf_
 ```
 
+Seed strategy code can be found on [paperswithbacktest.com](https://paperswithbacktest.com/) and the required data for the backtest can be obtained from [paperswithbacktest.com/datasets](https://paperswithbacktest.com/datasets).
+
 Launch and monitor an experiment entirely from the GUI:
 
 ```bash
