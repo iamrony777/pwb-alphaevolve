@@ -23,21 +23,21 @@ $ export OPENAI_API_KEY=sk-...
 $ export HF_ACCESS_TOKEN=hf_
 ```
 
-Launch the evolution controller (create a fresh experiment)
-
-```bash
-python scripts/run_example.py --experiment my_exp
-```
-
-Monitor the evolution process in real‑time using the Streamlit GUI:
+Launch and monitor an experiment entirely from the GUI:
 
 ```bash
 $ streamlit run scripts/gui.py
 ```
 
-The GUI lets you paste a seed strategy in a large text area, tune the options from
+The sidebar lets you paste a seed strategy, tune the options from
 `examples/config.py` and pick the number of iterations. Click **Run evolution** to start
 the search and watch the hall‑of‑fame table update live.
+
+Alternatively you can launch the evolution controller (create a fresh experiment)
+
+```bash
+python scripts/run_example.py --experiment my_exp
+```
 
 ### Managing experiments
 
